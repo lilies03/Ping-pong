@@ -10,7 +10,7 @@ WHITE=(255,255,255)
 RED=(150,0,0)
 GREEN=(0,150,0)
 RESTART=3000
-win_score=2
+win_score=10
 BACKGROUND=(randint(0,255),randint(0,255),randint(0,255))
 
 window=display.set_mode((WIDTH,HEIGHT))
