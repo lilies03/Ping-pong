@@ -1,6 +1,6 @@
 from pygame import*
 from random import randint
-
+from time import sleep
 font.init()
 
 WIDTH=600
@@ -9,7 +9,8 @@ FPS=60
 WHITE=(255,255,255)
 RED=(150,0,0)
 GREEN=(0,150,0)
-
+RESTART=3000
+win_score=2
 BACKGROUND=(randint(0,255),randint(0,255),randint(0,255))
 
 window=display.set_mode((WIDTH,HEIGHT))
@@ -24,6 +25,8 @@ lose2=font_text.render("PLAYER 2 LOSE",True,RED)
 win1=font_text.render("PLAYER 1 WIN",True,GREEN)
 win2=font_text.render("PLAYER 2 WIN",True,GREEN)
 
+score1=0
+score2=0
 class GameSprite(sprite.Sprite):
     def __init__(self,img:str,x:int,y:int,w:int,h:int):
         super().__init__()
@@ -81,6 +84,50 @@ while run:
         ball.update()
         racket1.update()
         racket2.update()
+
+        if ball.rect.y> HEIGHT-50 or ball.rect.y<0:
+            ball.dy*=-1
+        if sprite.collide_rect(racket1,ball)or sprite.collide_rect(racket2,ball):
+            ball.dx*=-1
+        if ball.rect.x<racket1.rect.x:
+            score2+=1
+            ball.rect.x=200
+            ball.rect.y=200
+        if ball.rect.x>racket2.rect.x:
+            score1+=1
+            ball.rect.x=200
+            ball.rect.y=200
+        
+        
+
+
+        score_text=f"{score1}:{score2}"
+        score_img=font_score.render(score_text,True,WHITE)
+        score_rect=score_img.get_rect(center=(WIDTH//2,50))
+        window.blit(score_img,score_rect)
+
+        if score1==win_score:
+            finish=True
+            window.blit(win1,(HEIGHT//2,WIDTH//2))
+            display.update()
+            time.delay(2000)
+            window.blit(lose2,(HEIGHT//2+50,WIDTH//2+50))
+            
+        if score2==win_score:
+            finish=True
+            window.blit(win2,(HEIGHT//2,WIDTH//2)) 
+            display.update()
+            time.delay(2000)
+            window.blit(lose1,(HEIGHT//2+50,WIDTH//2+50))
+    else:
+        score2=0
+        score1=0
+        finish=False
+        ball.rect.x=200
+        ball.rect.y=200
+        ball.dx=3
+        ball.dy=3
+        time.delay(RESTART)
 
     display.update()
     clock.tick(FPS)
